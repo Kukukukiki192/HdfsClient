@@ -19,6 +19,15 @@ import java.util.Arrays;
  * HDFS Zookeeper
  */
 public class HDFSClient {
+    //让程序强制加载bin目录下的hadoop.dll->防止报错 UnsatisfiedLinkError
+    static {
+        try {
+            System.load("E:/Hadoop/hadoop-3.1.3/bin/hadoop.dll");
+        } catch (UnsatisfiedLinkError e) {
+            System.err.println("Native code library failed to load.\n" + e);
+            System.exit(1);
+        }
+    }
 
     private FileSystem fs;
 
@@ -78,9 +87,10 @@ public class HDFSClient {
 
         //移动并更名
 //        fs.rename(new Path("/wcinput/ss.txt"), new Path("/cls.txt"));
+        fs.rename(new Path("/cls.txt"), new Path("/input/word.txt"));   //input文件夹要存在才能移动
 
         //目录更名
-        fs.rename(new Path("/wcinput"), new Path("/input"));
+//        fs.rename(new Path("/wcinput"), new Path("/input"));
     }
 
     //删除文件和目录
@@ -88,13 +98,13 @@ public class HDFSClient {
     public void rm() throws IOException {
         //参数说明(Path var1要删除的路径, boolean var2是否递归删除)
         //删除文件
-//        fs.delete(new Path("/hadoop-3.1.3.tar.gz"), false);
+        fs.delete(new Path("/hadoop-3.1.3.tar.gz"), false);
 
         //删除空目录
 //        fs.delete(new Path("/input"), false);
 
         //删除非空目录
-        fs.delete(new Path("/jingguo"), true);
+//        fs.delete(new Path("/jingguo"), true);
     }
 
     //查看文件详情
@@ -117,6 +127,7 @@ public class HDFSClient {
             BlockLocation[] blockLocations = fileStatus.getBlockLocations();
             System.out.println(Arrays.toString(blockLocations));
         }
+        //无文件的目录信息不显示
     }
 
     //文件和文件夹判断
